@@ -1,0 +1,178 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.11 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.11</h1>
+<h3>Konfiguration des <code>TreeRouteStack</code> Router-Typ mit einem Array</h3>
+<pre>
+&lt;?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\TreeRouteStack;
+
+$routes = array(
+    'routes' => array(
+        'pizza' => array(
+            'type'    => 'Literal',
+            'options' => array(
+                'route'    => '/pizza',
+                'defaults' => array(
+                    'controller' => 'pizza',
+                    'action'     => 'index',
+                ),
+            ),
+            'may_terminate' => true,
+            'child_routes'  => array(
+                'segment-route' => array(
+                    'type'    => 'Segment',
+                    'options' => array(
+                        'route' => '/:action[/:id]',
+                        'constraints' => array(
+                            'action' => '[a-zA-Z][a-zA-Z0-9_-]+',
+                            'id'     => '[0-9]+',
+                        ),
+                        'defaults' => array(
+                            'action'     => 'index',
+                        ),
+                    ),
+                ),
+                'regex-route' => array(
+                    'type'    => 'Regex',
+                    'options' => array(
+                        'regex'    => '/(?&lt;name&gt;[a-z-]+)(\-(?&lt;id&gt;[0-9]+))(\.(?&lt;format&gt;(html|rss)))?',
+                        'defaults' => array(
+                            'action' => 'show',
+                            'format' => 'html',
+                        ),
+                        'spec' => '/%name%-%id%.%format%',
+                    ),
+                ),
+            ),
+        ),
+    ),
+);
+
+$routeStack = TreeRouteStack::factory($routes);
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/pizza/list',
+    'http://www.luigis-pizza.de/pizza/salami-12.html',
+    'http://www.luigis-pizza.de/pizza/Spinat-12.html',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $routeStack->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig&lt;hr /&gt;';
+    } else {
+        echo 'URL ' . $url . ' ist gültig&lt;br /&gt;';
+        echo 'Treffer durch Route "' . $match->getMatchedRouteName() . '"&lt;br /&gt;';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '&lt;br /&gt;';
+        }
+        echo '&lt;hr /&gt;';
+    }
+}
+</pre>
+<h3>Ausgabe</h3>
+<pre>
+<?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\TreeRouteStack;
+
+$routes = array(
+    'routes' => array(
+        'pizza' => array(
+            'type'    => 'Literal',
+            'options' => array(
+                'route'    => '/pizza',
+                'defaults' => array(
+                    'controller' => 'pizza',
+                    'action'     => 'index',
+                ),
+            ),
+            'may_terminate' => true,
+            'child_routes'  => array(
+                'segment-route' => array(
+                    'type'    => 'Segment',
+                    'options' => array(
+                        'route' => '/:action[/:id]',
+                        'constraints' => array(
+                            'action' => '[a-zA-Z][a-zA-Z0-9_-]+',
+                            'id'     => '[0-9]+',
+                        ),
+                        'defaults' => array(
+                            'action'     => 'index',
+                        ),
+                    ),
+                ),
+                'regex-route' => array(
+                    'type'    => 'Regex',
+                    'options' => array(
+                        'regex'    => '/(?<name>[a-z-]+)(\-(?<id>[0-9]+))(\.(?<format>(html|rss)))?',
+                        'defaults' => array(
+                            'action' => 'show',
+                            'format' => 'html',
+                        ),
+                        'spec' => '/%name%-%id%.%format%',
+                    ),
+                ),
+            ),
+        ),
+    ),
+);
+
+$routeStack = TreeRouteStack::factory($routes);
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/pizza/list',
+    'http://www.luigis-pizza.de/pizza/salami-12.html',
+    'http://www.luigis-pizza.de/pizza/Spinat-12.html',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $routeStack->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig<hr />';
+    } else {
+        echo 'URL ' . $url . ' ist gültig<br />';
+        echo 'Treffer durch Route "' . $match->getMatchedRouteName() . '"<br />';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '<br />';
+        }
+        echo '<hr />';
+    }
+}
+?>
+</pre>
+</div>
+</div>

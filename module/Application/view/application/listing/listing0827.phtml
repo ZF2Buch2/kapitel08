@@ -1,0 +1,118 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.27 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.27</h1>
+<h3>Testen des RESTful-Controllers mit <code>Zend\Http\Client</code></h3>
+<pre>
+&lt;?php
+use Zend\Http\Client;
+
+$url = $this->serverUrl() . $this->url('pizza-rest');
+
+$client = new Client($url);
+$client->setMethod('get');
+$response = $client->send();
+
+echo "&lt;h5&gt;GET Anfrage (ohne ID)&lt;/h5&gt;";
+echo "&lt;pre&gt;" . $response-&gt;getContent() . '&lt;/pre&gt;';
+
+$client = new Client($url);
+$client-&gt;setMethod('get');
+$client-&gt;setParameterGet(array('id' =&gt; '5'));
+$response = $client-&gt;send();
+
+echo "&lt;h5&gt;GET Anfrage (mit ID)&lt;/h5&gt;";
+echo "&lt;pre&gt;" . $response-&gt;getContent() . '&lt;/pre&gt;';
+
+$client = new Client($url);
+$client-&gt;setMethod('post');
+$client-&gt;setParameterPost(array('name' =&gt; 'Banane'));
+$response = $client-&gt;send();
+
+echo "&lt;h5&gt;POST Anfrage&lt;/h5&gt;";
+echo "&lt;pre&gt;" . $response-&gt;getContent() . '&lt;/pre&gt;';
+
+$client = new Client($url);
+$client-&gt;setMethod('put');
+$client-&gt;setParameterGet(array('id' =&gt; '4'));
+$client-&gt;setParameterPost(array('name' =&gt; 'Prosciutto'));
+$response = $client-&gt;send();
+
+echo "&lt;h5&gt;PUT Anfrage&lt;/h5&gt;";
+echo "&lt;pre&gt;" . $response-&gt;getContent() . '&lt;/pre&gt;';
+
+$client = new Client($url);
+$client-&gt;setMethod('delete');
+$client-&gt;setParameterGet(array('id' =&gt; '4'));
+$response = $client-&gt;send();
+
+echo "&lt;h5&gt;DELETE Anfrage&lt;/h5&gt;";
+echo "&lt;pre&gt;" . $response-&gt;getContent() . '&lt;/pre&gt;';
+</pre>
+<h3>Ausgabe</h3>
+<?php
+use Zend\Http\Client;
+
+$url = $this->serverUrl() . $this->url('pizza-rest');
+
+$client = new Client($url);
+$client->setMethod('get');
+$response = $client->send();
+
+echo "<h5>GET Anfrage (ohne ID)</h5>";
+echo "<pre>" . $response->getContent() . '</pre>';
+
+$client = new Client($url);
+$client->setMethod('get');
+$client->setParameterGet(array('id' => '5'));
+$response = $client->send();
+
+echo "<h5>GET Anfrage (mit ID)</h5>";
+echo "<pre>" . $response->getContent() . '</pre>';
+
+$client = new Client($url);
+$client->setMethod('post');
+$client->setParameterPost(array('name' => 'Banane'));
+$response = $client->send();
+
+echo "<h5>POST Anfrage</h5>";
+echo "<pre>" . $response->getContent() . '</pre>';
+
+$client = new Client($url);
+$client->setMethod('put');
+$client->setParameterGet(array('id' => '4'));
+$client->setParameterPost(array('name' => 'Prosciutto'));
+$response = $client->send();
+
+echo "<h5>PUT Anfrage</h5>";
+echo "<pre>" . $response->getContent() . '</pre>';
+
+$client = new Client($url);
+$client->setMethod('delete');
+$client->setParameterGet(array('id' => '4'));
+$response = $client->send();
+
+echo "<h5>DELETE Anfrage</h5>";
+echo "<pre>" . $response->getContent() . '</pre>';
+?>
+</div>
+</div>

@@ -1,0 +1,67 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.25 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.25</h1>
+<h3>Erweiterte Modul-Klasse für Änderung der View-Strategie</h3>
+<pre>
+&lt;?php
+namespace Pizza;
+
+use Zend\EventManager\EventInterface;
+use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ControllerProviderInterface;
+use Zend\Mvc\MvcEvent;
+
+class Module implements 
+    BootstrapListenerInterface,
+    ControllerProviderInterface
+{
+    public function onBootstrap(EventInterface $e)
+    {
+        // get event manager
+        $eventManager = $e->getApplication()->getEventManager();
+        
+        // get managers
+        $sharedEventManager = $eventManager->getSharedManager();
+        $serviceManager     = $e->getApplication()->getServiceManager();
+        
+        // add JSON view strategy
+        $sharedEventManager->attach(__NAMESPACE__, MvcEvent::EVENT_DISPATCH, function($e) use ($serviceManager) {
+            $strategy = $serviceManager->get('ViewJsonStrategy');
+            $view = $serviceManager->get('ViewManager')->getView();
+            $strategy->attach($view->getEventManager());
+        });
+    }
+
+    public function getControllerConfig()
+    {
+        return array(
+            'factories' => array(
+                'pizza'      => 'Pizza\Controller\IndexControllerFactory',
+                'pizza-rest' => 'Pizza\Controller\RestControllerFactory',
+            ),
+        );
+    }
+}
+</pre>
+</div>
+</div>

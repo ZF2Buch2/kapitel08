@@ -1,0 +1,51 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.26 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.26</h1>
+<h3>Routendefinition für RESTful-Controller</h3>
+<pre>
+&lt;?php
+return array(
+    'router' => array(
+        'routes' => array(
+            [...]
+            
+            'pizza-rest' => array(
+                'type' => 'segment',
+                'options' => array(
+                    'route' => '/pizza-rest[/:id]',
+                    'constraints' => array(
+                        'id' => '[0-9]+',
+                    ),
+                    'defaults' => array(
+                        'controller' => 'pizza-rest',
+                    ),
+                ),
+            ),
+        ),
+    ),
+    
+    [...]
+);
+</pre>
+</div>
+</div>

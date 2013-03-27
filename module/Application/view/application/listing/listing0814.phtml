@@ -1,0 +1,74 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.14 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.14</h1>
+<h3>Listener-Aggregat zum Loggen für <code>dispatch.error</code> Event</h3>
+<pre>
+&lt;?php
+namespace Pizza\Listener;
+
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
+use Zend\Log\Logger;
+use Zend\Mvc\MvcEvent;
+
+class LoggingListener implements ListenerAggregateInterface
+{
+    protected $listeners = array();
+
+    public function attach(EventManagerInterface $events)
+    {
+        $this->listeners[] = $events->attach(
+            MvcEvent::EVENT_DISPATCH_ERROR, array($this, 'logErrors'), -100
+        );
+    }
+
+    public function detach(EventManagerInterface $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
+    }
+
+    public function logErrors(MvcEvent $e)
+    {
+        $sm = $e->getApplication()->getServiceManager();
+        $logger = $sm->get('Pizza\Logging\Service');
+        
+        $exception = $e->getResult()->exception;
+        
+        $message.= $exception->getMessage() . "\n";
+        $message.= str_pad('-', 120, '-') . "\n";
+        $message.= $exception->getFile() . " (";
+        $message.= $exception->getLine() . ")\n";
+        $message.= str_pad('-', 120, '-') . "\n";
+        $message.= $exception->getTraceAsString() . "\n";
+        $message.= str_pad('-', 120, '-') . "\n";
+        
+        $logger->log(Logger::ERR, $message);
+    }
+}
+</pre>
+</div>
+</div>

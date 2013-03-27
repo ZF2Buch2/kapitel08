@@ -1,0 +1,76 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.16 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.16</h1>
+<h3>Listener-Aggregat zur Laufzeitausgabe für <code>finish</code> Event</h3>
+<pre>
+&lt;?php
+namespace Pizza\Listener;
+
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\ListenerAggregateInterface;
+use Zend\Mvc\MvcEvent;
+
+class RunTimeListener implements ListenerAggregateInterface
+{
+    protected $listeners = array();
+
+    public function attach(EventManagerInterface $events)
+    {
+        $this->listeners[] = $events->attach(
+            MvcEvent::EVENT_FINISH, array($this, 'displayRuntime')
+        );
+    }
+
+    public function detach(EventManagerInterface $events)
+    {
+        foreach ($this->listeners as $index => $listener) {
+            if ($events->detach($listener)) {
+                unset($this->listeners[$index]);
+            }
+        }
+    }
+
+    public function displayRuntime(MvcEvent $e)
+    {
+        $response = $e->getApplication()->getResponse();
+        
+        $body = $response->getBody();
+        
+        $startTime = ZF2_TIME_START;
+        $endTime   = microtime(true);
+        $diffTime  = $endTime - $startTime;
+        
+        $runtime = '&lt;div style="border: 1px solid #eee; color: #888; ';
+        $runtime.= 'background-color: #f8f8f8; text-align: center; ';
+        $runtime.= 'margin: 10px; padding:10px;"&gt;';
+        $runtime.= 'Laufzeit: ' . round($diffTime, 5) . ' Sekunden';
+        $runtime.= '&lt;/div&gt;';
+        
+        $body = str_replace('&lt;/body&gt;', $runtime . '&lt;/body&gt;', $body);
+        
+        $response->setContent($body);
+    }
+}
+</pre>
+</div>
+</div>

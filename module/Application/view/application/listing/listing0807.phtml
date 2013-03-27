@@ -1,0 +1,106 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.7 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.7</h1>
+<h3>Beispiel für <code>Regex</code> Route-Typ</h3>
+<pre>
+&lt;?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Regex;
+
+$route = Regex::factory(array(
+    'regex' => '/pizza/(?&lt;name&gt;[a-z-]+)(\-(?&lt;id&gt;[0-9]+))(\.(?&lt;format&gt;(html|rss)))?',
+    'defaults' => array(
+        'controller' => 'Pizza\Controller\PizzaController',
+        'action'     => 'show',
+        'format'     => 'html',
+    ),
+    'spec' => '/pizza/%name%-%id%.%format%',
+));
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza/salami-12.html',
+    'http://www.luigis-pizza.de/pizza/vier-jahreszeiten-54.rss',
+    'http://www.luigis-pizza.de/pizza/Spinat-12.html',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $route->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig&lt;hr /&gt;';
+    } else {
+        echo 'URL ' . $url . ' ist gültig&lt;br /&gt;';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '&lt;br /&gt;';
+        }
+        echo '&lt;hr /&gt;';
+    }
+}
+</pre>
+<h3>Ausgabe</h3>
+<pre>
+<?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Regex;
+
+$route = Regex::factory(array(
+    'regex' => '/pizza/(?<name>[a-z-]+)(\-(?<id>[0-9]+))(\.(?<format>(html|rss)))?',
+    'defaults' => array(
+        'controller' => 'Pizza\Controller\PizzaController',
+        'action'     => 'show',
+        'format'     => 'html',
+    ),
+    'spec' => '/pizza/%name%-%id%.%format%',
+));
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza/salami-12.html',
+    'http://www.luigis-pizza.de/pizza/vier-jahreszeiten-54.rss',
+    'http://www.luigis-pizza.de/pizza/Spinat-12.html',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $route->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig<hr />';
+    } else {
+        echo 'URL ' . $url . ' ist gültig<br />';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '<br />';
+        }
+        echo '<hr />';
+    }
+}
+?>
+</pre>
+</div>
+</div>

@@ -1,0 +1,120 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.12 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.12</h1>
+<h3>URLs mit Hilfe von <code>SimpleRouteStack</code> ausgeben</h3>
+<pre>
+&lt;?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+use Zend\Mvc\Router\Http\Segment;
+use Zend\Mvc\Router\SimpleRouteStack;
+
+$route1 = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index'
+    ),
+));
+
+$route2 = Segment::factory(array(
+    'route' => '/pizza/:action[/:id]',
+    'constraints' => array(
+        'action'     => '[a-zA-Z][a-zA-Z0-9_-]+',
+        'id'         => '[0-9]+',
+    ),
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index',
+    ),
+));
+
+$routeStack = new SimpleRouteStack();
+$routeStack->addRoute('pizza-action', $route2);
+$routeStack->addRoute('pizza-home', $route1);
+
+$params  = array();
+$options = array(
+    'name' => 'pizza-home'
+);
+echo $routeStack->assemble($params, $options) . '&lt;br /&gt;';
+
+$params  = array(
+    'action' => 'show',
+    'id'     => '123',
+);
+$options = array(
+    'name' => 'pizza-action'
+);
+echo $routeStack->assemble($params, $options) . '&lt;br /&gt;';
+</pre>
+<h3>Ausgabe</h3>
+<pre>
+<?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+use Zend\Mvc\Router\Http\Segment;
+use Zend\Mvc\Router\SimpleRouteStack;
+
+$route1 = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index'
+    ),
+));
+
+$route2 = Segment::factory(array(
+    'route' => '/pizza/:action[/:id]',
+    'constraints' => array(
+        'action'     => '[a-zA-Z][a-zA-Z0-9_-]+',
+        'id'         => '[0-9]+',
+    ),
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index',
+    ),
+));
+
+$routeStack = new SimpleRouteStack();
+$routeStack->addRoute('pizza-action', $route2);
+$routeStack->addRoute('pizza-home', $route1);
+
+$params  = array();
+$options = array(
+    'name' => 'pizza-home'
+);
+echo $routeStack->assemble($params, $options) . '<br />';
+
+$params  = array(
+    'action' => 'show',
+    'id'     => '123',
+);
+$options = array(
+    'name' => 'pizza-action'
+);
+echo $routeStack->assemble($params, $options) . '<br />';
+?>
+</pre>
+</div>
+</div>

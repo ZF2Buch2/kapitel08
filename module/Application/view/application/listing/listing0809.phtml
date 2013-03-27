@@ -1,0 +1,142 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.8 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.8</h1>
+<h3>Beispiel für <code>SimpleRouteStack</code> Router-Typ</h3>
+<pre>
+&lt;?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+use Zend\Mvc\Router\Http\Segment;
+use Zend\Mvc\Router\SimpleRouteStack;
+
+$route1 = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index'
+    ),
+));
+
+$route2 = Segment::factory(array(
+    'route' => '/pizza/:action[/:id]',
+    'constraints' => array(
+        'action'     => '[a-zA-Z][a-zA-Z0-9_-]+',
+        'id'         => '[0-9]+',
+    ),
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index',
+    ),
+));
+
+$routeStack = new SimpleRouteStack();
+$routeStack->addRoute('pizza-action', $route2);
+$routeStack->addRoute('pizza-home', $route1);
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/pizza/list',
+    'http://www.luigis-pizza.de/pizza/show/17',
+    'http://www.luigis-pizza.de/pizza/list/sort/name',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $routeStack->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig&lt;hr /&gt;';
+    } else {
+        echo 'URL ' . $url . ' ist gültig&lt;br /&gt;';
+        echo 'Treffer durch Route "' . $match->getMatchedRouteName() . '"&lt;br /&gt;';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '&lt;br /&gt;';
+        }
+        echo '&lt;hr /&gt;';
+    }
+}
+</pre>
+<h3>Ausgabe</h3>
+<pre>
+<?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+use Zend\Mvc\Router\Http\Segment;
+use Zend\Mvc\Router\SimpleRouteStack;
+
+$route1 = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index'
+    ),
+));
+
+$route2 = Segment::factory(array(
+    'route' => '/pizza/:action[/:id]',
+    'constraints' => array(
+        'action'     => '[a-zA-Z][a-zA-Z0-9_-]+',
+        'id'         => '[0-9]+',
+    ),
+    'defaults' => array(
+        'controller' => 'pizza',
+        'action'     => 'index',
+    ),
+));
+
+$routeStack = new SimpleRouteStack();
+$routeStack->addRoute('pizza-action', $route2);
+$routeStack->addRoute('pizza-home', $route1);
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/pizza/list',
+    'http://www.luigis-pizza.de/pizza/show/17',
+    'http://www.luigis-pizza.de/pizza/list/sort/name',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $routeStack->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig<hr />';
+    } else {
+        echo 'URL ' . $url . ' ist gültig<br />';
+        echo 'Treffer durch Route "' . $match->getMatchedRouteName() . '"<br />';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '<br />';
+        }
+        echo '<hr />';
+    }
+}
+?>
+</pre>
+</div>
+</div>

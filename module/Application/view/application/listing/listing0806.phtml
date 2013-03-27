@@ -1,0 +1,102 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.6 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.6</h1>
+<h3>Beispiel für <code>Literal</code> Route-Typ</h3>
+<pre>
+&lt;?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+
+$route = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'Pizza\Controller\PizzaController',
+        'action'     => 'list'
+    ),
+));
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/Pizza',
+    'http://www.luigis-pizza.de/pizza/buy/id/123',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $route->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig&lt;hr /&gt;';
+    } else {
+        echo 'URL ' . $url . ' ist gültig&lt;br /&gt;';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '&lt;br /&gt;';
+        }
+        echo '&lt;hr /&gt;';
+    }
+}
+</pre>
+<h3>Ausgabe</h3>
+<pre>
+<?php
+use Zend\Http\Request;
+use Zend\Mvc\Router\Http\Literal;
+
+$route = Literal::factory(array(
+    'route' => '/pizza',
+    'defaults' => array(
+        'controller' => 'Pizza\Controller\PizzaController',
+        'action'     => 'list'
+    ),
+));
+
+$urlList = array(
+    'http://www.luigis-pizza.de/pizza',
+    'http://www.luigis-pizza.de/Pizza',
+    'http://www.luigis-pizza.de/pizza/buy/id/123',
+);
+
+$request = new Request();
+
+foreach ($urlList as $url) {
+    $request->setUri($url);
+    
+    $match = $route->match($request);
+    
+    if ($match === null) {
+        echo 'URL ' . $url . ' ist ungültig<hr />';
+    } else {
+        echo 'URL ' . $url . ' ist gültig<br />';
+        foreach($match->getParams() as $key => $value) {
+            echo $key . ' => ' . $value . '<br />';
+        }
+        echo '<hr />';
+    }
+}
+?>
+</pre>
+</div>
+</div>

@@ -1,0 +1,62 @@
+<?php 
+/**
+ * ZF2 Buch Kapitel 8
+ * 
+ * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
+ * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
+ * ISBN 978-3-8273-2994-3
+ * 
+ * @package    Application
+ * @author     Ralf Eggert <r.eggert@travello.de>
+ * @copyright  Alle Listings sind urheberrechtlich geschützt!
+ * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ */
+
+/**
+ * Listing 8.29 view script
+ * 
+ * @package    Application
+ */
+?>
+<div class="row">
+<div class="span9">
+<h1>Listing 8.29</h1>
+<h3>Beispiel für den Einsatz des <code>Forward</code> Plugins</h3>
+<pre>
+&lt;?php
+namespace Pizza\Controller;
+
+use Pizza\Service\PizzaService;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\ViewModel;
+
+class IndexController extends AbstractActionController
+{
+    public function indexAction()
+    {
+        $pizzaSpecialOffer = $this->forward()->dispatch('pizza', array('action' => 'special-offer', 'id' => 1));
+        
+        $pizzaList = $this->getPizzaService()->fetchList();
+        
+        $viewModel = new ViewModel(array(
+            'pizzaList'   => $pizzaList,
+        ));
+        $viewModel->addChild($pizzaSpecialOffer, 'pizzaSpecialOffer');
+        
+        return $viewModel;
+    }
+    
+    public function specialOfferAction()
+    {
+        $id = $this->getEvent()->getRouteMatch()->getParam('id');
+        
+        $pizzaRow = $this->getPizzaService()->fetchSingleById($id);
+        
+        return new ViewModel(array(
+            'pizzaRow' => $pizzaRow,
+        ));
+    }
+}
+</pre>
+</div>
+</div>
