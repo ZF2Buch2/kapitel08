@@ -20,6 +20,7 @@
 return array(
     'modules' => array(
         'Application',
+        'Pizza',
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(
