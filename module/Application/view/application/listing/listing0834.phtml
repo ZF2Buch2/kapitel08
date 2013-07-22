@@ -13,27 +13,31 @@
  */
 
 /**
- * Listing 8.33 view script
+ * Listing 8.34 view script
  * 
  * @package    Application
  */
 ?>
 <div class="row">
 <div class="span9">
-<h1>Listing 8.33</h1>
-<h3>Eigenes Controller-Plugin zum Dumpen von Variablen</h3>
+<h1>Listing 8.34</h1>
+<h3>Konfiguration der Modul-Klasse für das neue Controller-Plugin</h3>
 <pre>
 &lt;?php
-namespace Pizza\Controller\Plugin;
+namespace Pizza;
 
-use Zend\Debug\Debug;
-use Zend\Mvc\Controller\Plugin\AbstractPlugin;
+use Zend\ModuleManager\Feature\ControllerPluginProviderInterface;
 
-class Dump extends AbstractPlugin
+class Module implements 
+    ControllerPluginProviderInterface
 {
-    public function __invoke($data = null, $echo = true)
+    public function getControllerPluginConfig()
     {
-        return Debug::dump($data, null, $echo);
+        return array(
+            'invokables' => array(
+                'dump' => 'Pizza\Controller\Plugin\Dump',
+            ),
+        );
     }
 }
 </pre>

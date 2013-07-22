@@ -2,14 +2,14 @@
 /**
  * ZF2 Buch Kapitel 8
  * 
- * Das Buch "Zend Framework 2 - Von den Grundlagen bis zur fertigen Anwendung"
- * von Ralf Eggert ist im Addison-Wesley Verlag erschienen. 
- * ISBN 978-3-8273-2994-3
+ * Das Buch "Zend Framework 2 - Das Praxisbuch"
+ * von Ralf Eggert ist im Galileo-Computing Verlag erschienen. 
+ * ISBN 978-3-8362-2610-3
  * 
  * @package    Application
  * @author     Ralf Eggert <r.eggert@travello.de>
  * @copyright  Alle Listings sind urheberrechtlich geschützt!
- * @link       http://www.zendframeworkbuch.de/ und http://www.awl.de/2994
+ * @link       http://www.zendframeworkbuch.de/ und http://www.galileocomputing.de/3460
  */
 
 /**
@@ -22,6 +22,7 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\ListenerAggregateInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\View\Model\ViewModel;
+use Zend\View\Model\JsonModel;
 
 /**
  * Application listener
@@ -74,20 +75,23 @@ class ViewListener implements ListenerAggregateInterface
         // get view Model
         $viewModel = $e->getViewModel(); /* @var $viewModel ViewModel */
         
-        // add an additional header segment to layout
-        $header = new ViewModel();
-        $header->setTemplate('layout/header');
-        $viewModel->addChild($header, 'header');
-        
-        // add an additional sidebar segment to layout
-        $sidebar = new ViewModel();
-        $sidebar->setTemplate('layout/sidebar');
-        $viewModel->addChild($sidebar, 'sidebar');
-        
-        // add an additional footer segment to layout
-        $footer = new ViewModel();
-        $footer->setTemplate('layout/footer');
-        $viewModel->addChild($footer, 'footer');
+        // only for normal View Models
+        if (!$viewModel instanceof JsonModel) {
+            // add an additional header segment to layout
+            $header = new ViewModel();
+            $header->setTemplate('layout/header');
+            $viewModel->addChild($header, 'header');
+            
+            // add an additional sidebar segment to layout
+            $sidebar = new ViewModel();
+            $sidebar->setTemplate('layout/sidebar');
+            $viewModel->addChild($sidebar, 'sidebar');
+            
+            // add an additional footer segment to layout
+            $footer = new ViewModel();
+            $footer->setTemplate('layout/footer');
+            $viewModel->addChild($footer, 'footer');
+        }
         
         // return response
         return $e->getResponse();
